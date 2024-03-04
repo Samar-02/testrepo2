@@ -1,0 +1,32 @@
+#3, 6, 9,12,14, 17,19  col are numeric
+
+index<-c(2,4,5,7,8,10,11,13,15,16,18,20,21)
+for( i in index){
+germancredit[,i]<-factor(germancredit[,i])
+}
+
+model<-glm(Default~., data=germancredit,family=binomial(link=logit))
+
+pred<-predict(model,data=germancredit)
+
+predprob<-exp(pred)/(1+exp(pred))
+
+predstatus<-predprob>=1/6
+
+#predstatus<-predprob>=1/2
+
+cbind(predstatus,germancredit$Default)
+
+tp<-sum((predstatus==1)*(germancredit$Default==1))
+
+tn<-sum((predstatus==0)*(germancredit$Default==0))
+
+fp<-sum((predstatus==1)*(germancredit$Default==0))
+
+fn<-sum((predstatus==0)*(germancredit$Default==1))
+
+misrate<-(fp+fn)/1000
+
+sensitivity<-tp/(tp+fn)
+
+specificity<-tn/(tn+fp)
